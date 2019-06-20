@@ -5,15 +5,6 @@ load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 
 # Long-lived download links available at: https://www.jetbrains.com/intellij-repository/releases
 
-# The plugin api for IntelliJ 2018.3. This is required to build IJwB,
-# and run integration tests.
-http_archive(
-    name = "intellij_ce_2018_3",
-    build_file = "@//intellij_platform_sdk:BUILD.idea",
-    sha256 = "b2390d64269ca4d4a7fcd856a29e5b2d1a81f40451f135b092f9f97f046b8f35",
-    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIC/2018.3.6/ideaIC-2018.3.6.zip",
-)
-
 # The plugin api for IntelliJ 2019.1. This is required to build IJwB,
 # and run integration tests.
 http_archive(
@@ -21,15 +12,6 @@ http_archive(
     build_file = "@//intellij_platform_sdk:BUILD.idea",
     sha256 = "e045751adabe2837203798270e1dc173128fe3e607e3025d4f8110c7ed4cc499",
     url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIC/2019.1.2/ideaIC-2019.1.2.zip",
-)
-
-# The plugin api for IntelliJ UE 2018.3. This is required to run UE-specific
-# integration tests.
-http_archive(
-    name = "intellij_ue_2018_3",
-    build_file = "@//intellij_platform_sdk:BUILD.ue",
-    sha256 = "727882a57673636bc4333e670e7b964869775fffc2275de60001d691fe63e1c0",
-    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIU/2018.3.6/ideaIU-2018.3.6.zip",
 )
 
 # The plugin api for IntelliJ UE 2019.1. This is required to run UE-specific
