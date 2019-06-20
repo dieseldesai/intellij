@@ -42,7 +42,6 @@ import com.google.idea.blaze.base.run.ExecutorType;
 import com.google.idea.blaze.base.run.confighandler.BlazeCommandRunConfigurationRunner;
 import com.google.idea.blaze.base.run.state.RunConfigurationState;
 import com.google.idea.blaze.base.settings.Blaze;
-import com.google.idea.blaze.java.AndroidBlazeRules;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.RunManager;
@@ -118,6 +117,17 @@ public class BlazeAndroidBinaryRunConfigurationHandler
       Executor executor, ExecutionEnvironment env) throws ExecutionException {
     Project project = env.getProject();
 
+    // Reference bug: b/134587683
+    // Due to the way blaze run configuration editors update the underlying configuration state,
+    // it's possible for the configuration referenced in this handler to be out of date. This can
+    // cause tricky side-effects such as incorrect build target and target validation settings.
+    // Fortunately, the only fields that can become out of sync are the target labels and it's
+    // target kind. The handlers are designed to only handle their supported targets, so we can
+    // safely ignore all fields other than target label itself.
+    BlazeCommandRunConfiguration configFromEnv =
+        BlazeAndroidRunConfigurationHandler.getBlazeCommandRunConfigurationFromEnvironment(env);
+    configuration.setTarget(configFromEnv.getTarget());
+
     Module module = getModule();
     AndroidFacet facet = module != null ? AndroidFacet.getInstance(module) : null;
     ProjectViewSet projectViewSet = ProjectViewManager.getInstance(project).getProjectViewSet();
@@ -189,11 +199,6 @@ public class BlazeAndroidBinaryRunConfigurationHandler
       errors.addAll(BlazeAndroidRunConfigurationValidationUtil.validateFacet(facet, module));
     }
     errors.addAll(configState.validate(facet));
-    errors.addAll(
-        BlazeAndroidRunConfigurationValidationUtil.validateLabel(
-            getLabel(),
-            configuration.getProject(),
-            ImmutableList.of(AndroidBlazeRules.RuleTypes.ANDROID_BINARY.getKind())));
     return errors;
   }
 
